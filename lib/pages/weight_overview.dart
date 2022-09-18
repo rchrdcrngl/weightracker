@@ -45,7 +45,7 @@ class WeightOverview extends StatelessWidget {
                           child: Text('text')),
                     ),
                     Card(
-                      color: Colors.red,
+                      color: Colors.green,
                       child: Container(
                           height: 200.0,
                           padding: EdgeInsets.all(15.0),
