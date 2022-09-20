@@ -62,15 +62,15 @@ Widget BMICard({required BMIData data}){
   if(bmi<18.5){
     cardColor = Colors.blueGrey;
     txtColor = Colors.white;
-  } else if(bmi>=18.5 && bmi<=24.9){
+  } else if(bmi>=18.5 && bmi<25){
     cardColor = Colors.green;
     txtColor = Colors.white;
   }
-  else if(bmi>=25 && bmi<=29.9){
+  else if(bmi>=25 && bmi<30){
     cardColor = Colors.yellowAccent;
     txtColor = Colors.black;
   }
-  else if(bmi>=30 && bmi<=34.9){
+  else if(bmi>=30 && bmi<35){
     cardColor = Colors.orangeAccent;
     txtColor = Colors.black;
   }else if(bmi>=35){

@@ -36,8 +36,10 @@ class _WeightHistoryState extends State<WeightHistory> {
   }
 
   void deleteWeight({required int id}) async {
-    db.deleteWeight(id);
-    print('Data deleted');
+    await db.deleteWeight(id);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Weight data has been deleted"),
+    ));
     setState(() {
       loadData();
     });
@@ -50,7 +52,7 @@ class _WeightHistoryState extends State<WeightHistory> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => EditWeight(id: wd.id!, weight: wd.getWeight, date: wd.getDate)),
+            MaterialPageRoute(builder: (context) => EditWeight(id: wd.id!, weight: wd.getWeight, date: wd.getDate, refreshData: loadData,)),
           );
         },
         child: Card(

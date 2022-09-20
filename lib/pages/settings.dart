@@ -124,6 +124,8 @@ class _SettingsPageState extends State<SettingsPage> {
     //Read CSV file
     final input = File(filePath!).openRead();
     final fields = await input.transform(utf8.decoder).transform(const CsvToListConverter()).toList();
+    print(fields.length);
+    print(fields.first);
     //Check if CSV has less than two fields
     if(fields.length<2) return;
     //Map CSV data to correct fields from DB
@@ -137,21 +139,33 @@ class _SettingsPageState extends State<SettingsPage> {
     print('${fields[0][idxDate]} - ${fields[0][idxWeight]}');
     try{
       for(int i=1; i<fields.length; i++){
-        db.addWeight(WeightData(date: DateTime.tryParse(fields[i][idxDate])?.toLocal().toString(), weight:fields[i][idxWeight]));
+        db.addWeight(WeightData(date: DateTime.tryParse(fields[i][idxDate])?.toLocal().toString(), weight: fields[i][idxWeight].toDouble()));
       }
-    } catch(e){
-      print('error adding data');
+    }catch(e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Error parsing CSV file"),
+      ));
     }
     _selectedDateColumn.clear();
     _selectedWeightColumn.clear();
     _columnValue.clear();
-    print('finished inserting data');
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Data added successfully!"),
+    ));
   }
 
   void clearData() async {
     WeightDBHelper db = WeightDBHelper();
     db.clearData();
-    print('Data Cleared');
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Data has been cleared"),
+    ));
+  }
+
+  void exportData() async{
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Data has been exported (working feature)"),
+    ));
   }
 
   @override
@@ -196,7 +210,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                       const SizedBox(height: 8,),
                       InkWell(
-                        //onTap: clearData,
+                        onTap: exportData,
                         child: Card(
                           child: Container(
                             width: 300,
@@ -266,7 +280,9 @@ class _ProfileFormState extends State<ProfileForm> {
     pref = await SharedPreferences.getInstance();
     pref.setDouble('height', height);
     pref.setDouble('goal_weight', goal);
-    print('$height - $goal');
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Height and Goal Weight has been saved."),
+    ));
   }
 
   void loadData() async {
