@@ -5,14 +5,17 @@ import 'package:flutter/services.dart';
 import '../components/const_colors.dart';
 import '../components/ui_widgets.dart';
 
-class AddWeight extends StatefulWidget {
-  const AddWeight({Key? key}) : super(key: key);
+class EditWeight extends StatefulWidget {
+  const EditWeight({Key? key, required this.id, required this.weight, required this.date}) : super(key: key);
+  final int id;
+  final double weight;
+  final String date;
 
   @override
-  State<AddWeight> createState() => _AddWeightState();
+  State<EditWeight> createState() => _EditWeightState();
 }
 
-class _AddWeightState extends State<AddWeight> {
+class _EditWeightState extends State<EditWeight> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController controllerDate =  TextEditingController();
   final TextEditingController controllerWeight = TextEditingController();
@@ -24,7 +27,8 @@ class _AddWeightState extends State<AddWeight> {
 
   @override
   void initState(){
-    controllerDate.text = selectedDate.toLocal().toString().split(' ')[0];
+    controllerDate.text = widget.date;
+    controllerWeight.text = widget.weight.toString();
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -41,19 +45,21 @@ class _AddWeightState extends State<AddWeight> {
     }
   }
 
-  Future<int> addWeight() async {
+  Future<int> EditWeight() async {
     int success = -1;
     if(_formKey.currentState!.validate()){
-      db.addWeight(WeightData(weight: double.tryParse(controllerWeight.text), date: controllerDate.text)).then((value) => success = value);
+      db.updateWeight(widget.id, WeightData(weight: double.tryParse(controllerWeight.text), date: controllerDate.text)).then((value) => success = value);
       //print(success);
     }
+    Navigator.pop(context);
     return success;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        //backgroundColor: /*Colors.transparent*/Color.fromRGBO(115, 57, 50,1),
+      //backgroundColor: /*Colors.transparent*/Color.fromRGBO(115, 57, 50,1),
+      appBar: AppBar(title: header(title: 'Edit Weight'),),
         body: SafeArea(
           child: Form(
             key: _formKey,
@@ -74,10 +80,10 @@ class _AddWeightState extends State<AddWeight> {
                         color: Colors.white60,
                         boxShadow: [
                           BoxShadow(
-                            color: shdColor,
-                            blurRadius: 100,
-                            spreadRadius: 5,
-                            offset: const Offset(2,6)// Shadow position
+                              color: shdColor,
+                              blurRadius: 100,
+                              spreadRadius: 5,
+                              offset: const Offset(2,6)// Shadow position
                           ),
                         ],
                         //border: Border.all(color:Color.fromRGBO(255,255,255,450), width:3),
@@ -86,7 +92,7 @@ class _AddWeightState extends State<AddWeight> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                           Text(
+                          Text(
                             lblWeight,
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -108,7 +114,14 @@ class _AddWeightState extends State<AddWeight> {
                                 color: Colors.white,
                               ),
                             ),
-                            inputFormatters: formatInput(),
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(RegExp(r'[1-9]\d*[,.]?[0-9]?')),
+                              TextInputFormatter.withFunction(
+                                    (oldValue, newValue) => newValue.copyWith(
+                                  text: newValue.text.replaceAll(',', '.'),
+                                ),
+                              ),
+                            ],
                             style: TextStyle(
                               fontSize: 100.0,
                               height: 1,
@@ -187,13 +200,13 @@ class _AddWeightState extends State<AddWeight> {
                         height: 20.0,
                       ),
                       ElevatedButton.icon(
-                        onPressed: addWeight,
+                        onPressed: EditWeight,
                         style: ElevatedButton.styleFrom(
                           primary: darkGreen,
                           onPrimary: Colors.white,
                         ),
-                        label: const Text('Add Weight'),
-                        icon: const Icon(Icons.add_circle_outlined),
+                        label: const Text('Edit Weight'),
+                        icon: const Icon(Icons.edit),
                       ),
                     ],
                   ),),

@@ -5,12 +5,17 @@ import 'package:floating_navbar/floating_navbar_item.dart';
 import 'package:flutter/material.dart';
 import 'package:floating_navbar/floating_navbar.dart';
 import 'package:WeightTracker/pages/add_weight.dart';
+import 'package:flutter/services.dart';
 
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(MainApp());
+  });
 }
 
-class MyApp extends StatelessWidget {
+class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -33,7 +38,7 @@ class MyApp extends StatelessWidget {
           FloatingNavBarItem(
             iconData: Icons.line_weight_sharp,
             title: 'Weight History',
-            page: const WeightOverview(),
+            page: WeightHistory(),
           ),
           FloatingNavBarItem(
             iconData: Icons.add,
