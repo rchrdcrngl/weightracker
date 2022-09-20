@@ -6,7 +6,8 @@ import '../components/const_colors.dart';
 import '../components/ui_widgets.dart';
 
 class AddWeight extends StatefulWidget {
-  const AddWeight({Key? key}) : super(key: key);
+  const AddWeight({Key? key, required this.goToPage}) : super(key: key);
+  final Function({required int index}) goToPage;
 
   @override
   State<AddWeight> createState() => _AddWeightState();
@@ -17,6 +18,7 @@ class _AddWeightState extends State<AddWeight> {
   final TextEditingController controllerDate =  TextEditingController();
   final TextEditingController controllerWeight = TextEditingController();
   final WeightDBHelper db = WeightDBHelper();
+  final FocusNode weightFocus = FocusNode();
   DateTime selectedDate = DateTime.now();
   String lblWeight = 'Enter Weight';
   Color txtColor = green;
@@ -44,8 +46,12 @@ class _AddWeightState extends State<AddWeight> {
   Future<int> addWeight() async {
     int success = -1;
     if(_formKey.currentState!.validate()){
+      weightFocus.unfocus();
       db.addWeight(WeightData(weight: double.tryParse(controllerWeight.text), date: controllerDate.text)).then((value) => success = value);
-      //print(success);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Weight added successfully!"),
+      ));
+      widget.goToPage(index: 1);
     }
     return success;
   }
@@ -97,6 +103,7 @@ class _AddWeightState extends State<AddWeight> {
                           ),
                           TextFormField(
                             controller: controllerWeight,
+                            focusNode: weightFocus,
                             textAlign: TextAlign.center,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
