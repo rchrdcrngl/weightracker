@@ -6,10 +6,11 @@ import '../components/const_colors.dart';
 import '../components/ui_widgets.dart';
 
 class EditWeight extends StatefulWidget {
-  const EditWeight({Key? key, required this.id, required this.weight, required this.date}) : super(key: key);
+  const EditWeight({Key? key, required this.id, required this.weight, required this.date, required this.refreshData}) : super(key: key);
   final int id;
   final double weight;
   final String date;
+  final Future<Null> Function() refreshData;
 
   @override
   State<EditWeight> createState() => _EditWeightState();
@@ -20,6 +21,7 @@ class _EditWeightState extends State<EditWeight> {
   final TextEditingController controllerDate =  TextEditingController();
   final TextEditingController controllerWeight = TextEditingController();
   final WeightDBHelper db = WeightDBHelper();
+  final FocusNode weightFocus = FocusNode();
   DateTime selectedDate = DateTime.now();
   String lblWeight = 'Enter Weight';
   Color txtColor = green;
@@ -48,10 +50,14 @@ class _EditWeightState extends State<EditWeight> {
   Future<int> EditWeight() async {
     int success = -1;
     if(_formKey.currentState!.validate()){
+      weightFocus.unfocus();
       db.updateWeight(widget.id, WeightData(weight: double.tryParse(controllerWeight.text), date: controllerDate.text)).then((value) => success = value);
-      //print(success);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Weight edited successfully"),
+      ));
     }
     Navigator.pop(context);
+    widget.refreshData();
     return success;
   }
 
@@ -104,6 +110,7 @@ class _EditWeightState extends State<EditWeight> {
                           TextFormField(
                             controller: controllerWeight,
                             textAlign: TextAlign.center,
+                            focusNode: weightFocus,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
