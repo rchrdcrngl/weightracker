@@ -15,7 +15,22 @@ void main() {
   });
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
+  const MainApp({Key? key}) : super(key: key);
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  int _selectedIndex = 0;
+
+  void changeIndex({required int index}){
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,6 +43,7 @@ class MainApp extends StatelessWidget {
       ),
       home: FloatingNavBar(
         resizeToAvoidBottomInset: false,
+        index: _selectedIndex,
         color: Colors.green,
         items: [
           FloatingNavBarItem(
@@ -43,7 +59,7 @@ class MainApp extends StatelessWidget {
           FloatingNavBarItem(
             iconData: Icons.add,
             title: 'Add Weight',
-            page: const AddWeight(),
+            page: AddWeight(goToPage: changeIndex,),
           ),
           FloatingNavBarItem(
             iconData: Icons.settings,
