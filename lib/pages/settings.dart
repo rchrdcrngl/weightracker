@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:WeightTracker/components/ui_widgets.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../components/WeightDBHelper.dart';
 import 'package:file_picker/file_picker.dart';
@@ -49,9 +50,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       onPressed: (int index) {
                         setState(() {
                           for (int i = 0; i < _selectedWeightColumn.length; i++) {
-                            print(_selectedWeightColumn[i]);
                             _selectedWeightColumn[i] = (i == index);
-                            print(i == index);
                           }
                         });
                       },
@@ -111,8 +110,6 @@ class _SettingsPageState extends State<SettingsPage> {
         });
   }
 
-
-
   Future<void> openFile() async{
     int idxDate = 0;
     int idxWeight = 1;
@@ -142,14 +139,14 @@ class _SettingsPageState extends State<SettingsPage> {
         db.addWeight(WeightData(date: DateTime.tryParse(fields[i][idxDate])?.toLocal().toString(), weight: fields[i][idxWeight].toDouble()));
       }
     }catch(e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Error parsing CSV file"),
       ));
     }
     _selectedDateColumn.clear();
     _selectedWeightColumn.clear();
     _columnValue.clear();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text("Data added successfully!"),
     ));
   }
@@ -157,16 +154,39 @@ class _SettingsPageState extends State<SettingsPage> {
   void clearData() async {
     WeightDBHelper db = WeightDBHelper();
     db.clearData();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text("Data has been cleared"),
     ));
   }
 
   void exportData() async{
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text("Data has been exported (working feature)"),
+    List<WeightData> _data = [];
+    List<List<dynamic>?>? _dataToList = [];
+    //Get data from database
+    await db.fetchAllWeights().then((value) => _data = value);
+    //Set header
+    _dataToList.add(['Date', 'Weight']);
+    //Parse data
+    _data.forEach((element) {
+      _dataToList.add([element.getDate, element.getWeight]);
+    });
+    //Save file
+    try{
+      String csv = const ListToCsvConverter().convert(_dataToList);
+      String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+      final file = File('$selectedDirectory/WeightBackup_${DateTime.now().toLocal().toString().split(' ')[0]}.csv');
+      file.writeAsString(csv);
+    }catch(e){
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('An error has occurred in exporting the data.'),
+      ));
+    }
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("Data has been exported."),
     ));
   }
+
 
   @override
   Widget build(BuildContext context) {
