@@ -14,5 +14,12 @@ Features:
  - Weight week trend
  - Line graph of weight since first input
 
-
- 
+Sample Screenshots:
+ - Dashboard
+ ![alt text](https://github.com/rchrdcrngl/weightracker/blob/main/screenshots/Add%20Weight.jpg?raw=true "Dashboard")
+ - Weight History
+ ![alt text](https://github.com/rchrdcrngl/weightracker/blob/main/screenshots/Weight%20History.jpg?raw=true "Weight History")
+ - Add Weight
+ ![alt text](https://github.com/rchrdcrngl/weightracker/blob/main/screenshots/Add%20Weight.jpg?raw=true "Add Weight")
+ - Settings
+ ![alt text](https://github.com/rchrdcrngl/weightracker/blob/main/screenshots/Settings.jpg?raw=true "Settings")
