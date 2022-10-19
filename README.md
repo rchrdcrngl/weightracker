@@ -16,10 +16,17 @@ Features:
 
 Sample Screenshots:
  - Dashboard
+ 
  ![alt text](https://github.com/rchrdcrngl/weightracker/blob/main/screenshots/Dashboard.jpg "Dashboard")
+ 
  - Weight History
+ 
  ![alt text](https://github.com/rchrdcrngl/weightracker/blob/main/screenshots/Weight%20History.jpg?raw=true "Weight History")
+ 
  - Add Weight
+ 
  ![alt text](https://github.com/rchrdcrngl/weightracker/blob/main/screenshots/Add%20Weight.jpg?raw=true "Add Weight")
+ 
  - Settings
+ 
  ![alt text](https://github.com/rchrdcrngl/weightracker/blob/main/screenshots/Settings.jpg?raw=true "Settings")
